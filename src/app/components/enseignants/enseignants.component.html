@@ -1,0 +1,109 @@
+<div class="wrapper">
+  
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+  <!-- Main -->
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0"></h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Enseignants</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <div class="container py-4">
+    <h2 class="mb-4">Gestion des enseignants</h2>
+
+    <!-- Formulaire -->
+    <form [formGroup]="enseignantForm" (ngSubmit)="save()" class="card p-4 mb-4 shadow">
+      <div class="row g-3">
+
+        <!-- Nom -->
+        <div class="col-md-4">
+          <label class="form-label">Nom</label>
+          <input formControlName="nom" type="text" class="form-control" placeholder="Nom">
+          <div *ngIf="enseignantForm.get('nom')?.touched && enseignantForm.get('nom')?.invalid" class="text-danger small mt-1">
+            <div *ngIf="enseignantForm.get('nom')?.errors?.['required']">Le nom est requis.</div>
+            <div *ngIf="enseignantForm.get('nom')?.errors?.['minlength']">Minimum 2 caractères.</div>
+            <div *ngIf="enseignantForm.get('nom')?.errors?.['maxlength']">Maximum 155 caractères.</div>
+          </div>
+        </div>
+
+        <!-- Prénom -->
+        <div class="col-md-4">
+          <label class="form-label">Prénom</label>
+          <input formControlName="prenom" type="text" class="form-control" placeholder="Prénom">
+          <div *ngIf="enseignantForm.get('prenom')?.touched && enseignantForm.get('prenom')?.invalid" class="text-danger small mt-1">
+            <div *ngIf="enseignantForm.get('prenom')?.errors?.['required']">Le prénom est requis.</div>
+            <div *ngIf="enseignantForm.get('prenom')?.errors?.['minlength']">Minimum 2 caractères.</div>
+            <div *ngIf="enseignantForm.get('prenom')?.errors?.['maxlength']">Maximum 155 caractères.</div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-4">
+          <label class="form-label">Email</label>
+          <input formControlName="email" type="text" class="form-control" placeholder="Email">
+          <div *ngIf="enseignantForm.get('email')?.touched && enseignantForm.get('email')?.invalid" class="text-danger small mt-1">
+      <div *ngIf="enseignantForm.get('email')?.errors?.['required']">Le prénom est requis.</div>
+      <div *ngIf="enseignantForm.get('email')?.errors?.['email']">Adresse email invalide.</div>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+          <button type="submit" class="btn btn-primary" [disabled]="enseignantForm.invalid">
+            {{ selectedId ? 'Modifier' : 'Ajouter' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">Annuler</button>
+        </div>
+      </div>
+    </form>
+
+
+    <!-- Tableau -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Login</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of enseignants">
+            <td>{{ e.user.nom }}</td>
+            <td>{{ e.user.prenom }}</td>
+            <td>{{ e.user.login }}</td>
+            <td>{{ e.user.email }}</td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-warning me-2" (click)="edit(e)">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="enseignants.length === 0">
+            <td colspan="5" class="text-center text-muted">Aucun enseignant enregistré.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

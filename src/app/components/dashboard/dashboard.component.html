@@ -1,0 +1,79 @@
+<div class="wrapper">
+  
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end::App Content Header-->
+
+    <!--begin::App Content-->
+    <div class="app-content">
+      <div class="container-fluid">
+        <!-- TON CONTENU (boîtes, chats, graphiques, etc.) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <div class="small-box text-bg-primary">
+              <div class="inner">
+                <h3>{{ globalStats.eleves ?? 0 }}</h3>
+                <p>Élèves</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-6">
+            <div class="small-box text-bg-success">
+              <div class="inner">
+                <h3>{{ globalStats.classes ?? 0 }}</h3>
+                <p>Classes</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-6">
+            <div class="small-box text-bg-warning">
+              <div class="inner">
+                <h3>{{ globalStats.enseignants ?? 0 }}</h3>
+                <p>Enseignants</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <!-- Moyennes par classe -->
+          <div class="card mt-4">
+            <div class="card-header">Moyennes Générales par Classe</div>
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let item of moyennesParClasse" class="list-group-item d-flex justify-content-between">
+                <span>{{ item.classe }}</span>
+                <span *ngIf="item.moyenne !== null">{{ item.moyenne }}/20</span>
+                <span *ngIf="item.moyenne === null">Aucune donnée</span>
+              </li>
+            </ul>
+          </div>
+
+
+
+      </div>
+    </div>
+    <!--end::App Content-->
+
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,91 @@
+<div class="wrapper">
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+
+  <!-- Main -->
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0">Gestion des Classes</h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Classes</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-content">
+      <div class="container-fluid">
+        <div class="row g-4">
+          <!-- Formulaire -->
+          <div class="col-md-6 mx-auto">
+            <div class="card card-primary card-outline">
+              <div class="card-header">
+                <h5 class="card-title mb-0">{{ selectedId ? 'Modifier une classe' : 'Ajouter une classe' }}</h5>
+              </div>
+              <form [formGroup]="classeForm" (ngSubmit)="save()">
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="nom" class="form-label">Nom de la classe</label>
+                    <input type="text" id="nom" formControlName="nom" class="form-control" placeholder="Ex: 4ème B" />
+                  </div>
+                  <div class="mb-3">
+                    <label for="niveau" class="form-label">Niveau</label>
+                    <select id="niveau" formControlName="niveau" class="form-select">
+                      <option value="" disabled selected>-- Sélectionnez le niveau --</option>
+                      <option *ngFor="let niveau of ['6ème', '5ème', '4ème', '3ème', '2nde LE', '2nde STT', '2nde S', '1ère LE', '1ère STT', '1ère S', 'Terminale A', 'Terminale D', 'Terminale C']" [value]="niveau">{{ niveau }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" [disabled]="classeForm.invalid" class="btn btn-primary me-2">{{ selectedId ? 'Modifier' : 'Ajouter' }}</button>
+                  <button type="button" class="btn btn-secondary" (click)="resetForm()">Annuler</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Liste des classes -->
+          <div class="col-12">
+            <div class="card card-outline card-secondary">
+              <div class="card-header"><h5 class="card-title mb-0">Liste des classes</h5></div>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap align-middle">
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>Niveau</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of classes">
+                      <td>{{ c.nom }}</td>
+                      <td>{{ c.niveau }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(c)">
+                          <i class="bi bi-pencil-square"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="classes.length === 0">
+                      <td colspan="3" class="text-center text-muted">Aucune classe enregistrée.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>
