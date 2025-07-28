@@ -1,0 +1,110 @@
+<div class="wrapper">
+    
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+
+  <!-- Main -->
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0">Gestion des Bulletins</h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Bulletins</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Partie Admin -->
+    <div *ngIf="isAdmin" class="container">
+      <h2>Génération des bulletins</h2>
+
+      <!-- Filtres -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="classe">Classe :</label>
+          <select id="classe" class="form-control" [(ngModel)]="selectedClasseId" (change)="onClasseChange()">
+            <option *ngFor="let classe of classes" [value]="classe.id">{{ classe.nom }}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="periode">Période :</label>
+          <select id="periode" class="form-control" [(ngModel)]="selectedPeriode" (change)="onPeriodeChange()">
+            <option *ngFor="let p of periodes" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-primary w-100" (click)="generateZipForPeriode()" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+            Télécharger tous les bulletins (ZIP)
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="zipUrl" class="alert alert-success mt-2">
+        <a [href]="zipUrl" target="_blank">📦 Télécharger le fichier ZIP généré</a>
+      </div>
+
+      <!-- Élèves sans bulletin -->
+      <div *ngIf="elevesSansBulletin.length">
+        <h4>Élèves sans bulletin pour "{{ selectedPeriode }}"</h4>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center"
+              *ngFor="let eleve of elevesSansBulletin">
+            {{ eleve.user?.prenom }} {{ eleve.user?.nom }}
+            <button class="btn btn-sm btn-success" (click)="generateBulletin(eleve.id)" [disabled]="loading">
+              Générer
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Élèves avec bulletin -->
+      <div *ngIf="elevesAvecBulletin.length" class="mt-4">
+        <h4>Élèves avec bulletin pour "{{ selectedPeriode }}"</h4>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center"
+              *ngFor="let eleve of elevesAvecBulletin">
+            {{ eleve.user?.prenom }} {{ eleve.user?.nom }}
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-2"
+                      [disabled]="!getBulletinPdfPath(eleve.id)"
+                      (click)="downloadBulletin(eleve.id)">
+                Télécharger
+              </button>
+              <button class="btn btn-sm btn-warning" (click)="generateBulletin(eleve.id)" [disabled]="loading">
+                Régénérer
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Partie Élève -->
+    <div *ngIf="isEleve" class="container mt-4">
+      <h3>📘 Mes bulletins</h3>
+
+      <div *ngIf="isEleve && bulletins.length === 0" class="alert alert-info">
+        Aucun bulletin disponible pour le moment.
+      </div>
+
+      <div *ngFor="let bulletin of bulletins" class="card my-2">
+        <div class="card-body">
+          <p><strong>Période :</strong> {{ bulletin.periode }}</p>
+          <p><strong>Moyenne :</strong> {{ bulletin.moyenne }}</p>
+          <p><strong>Mention :</strong> {{ bulletin.mention }}</p>
+          <button class="btn btn-sm btn-outline-primary" (click)="openPdf(bulletin.pdf_path)">Voir le bulletin</button>
+        </div>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

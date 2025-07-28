@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "firstAngularAppCRUDAuthGestionEcole2": {
+    "firstAngularAppCRUDAuthGestionEcole": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/first-angular-app-crudauth-gestion-ecole2",
+            "outputPath": "dist/first-angular-app-crudauth-gestion-ecole",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -74,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "firstAngularAppCRUDAuthGestionEcole2:build:production"
+              "buildTarget": "firstAngularAppCRUDAuthGestionEcole:build:production"
             },
             "development": {
-              "buildTarget": "firstAngularAppCRUDAuthGestionEcole2:build:development"
+              "buildTarget": "firstAngularAppCRUDAuthGestionEcole:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -107,8 +107,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }

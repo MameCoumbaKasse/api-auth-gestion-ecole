@@ -1,0 +1,160 @@
+<div class="wrapper">
+  
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+  <!-- Main -->
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0"></h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Élèves</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container py-4">
+      <h2 class="mb-4">Gestion des élèves</h2>
+
+      <!-- Formulaire -->
+      <form [formGroup]="eleveForm" (ngSubmit)="save()" class="card p-4 mb-4 shadow">
+        <div class="row g-3">
+
+          <!-- Nom -->
+          <div class="col-md-4">
+            <label class="form-label">Nom</label>
+            <input formControlName="nom" type="text" class="form-control" placeholder="Nom">
+            <div *ngIf="eleveForm.get('nom')?.touched && eleveForm.get('nom')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="eleveForm.get('nom')?.errors?.['required']">Le nom est requis.</div>
+              <div *ngIf="eleveForm.get('nom')?.errors?.['maxlength']">Maximum 155 caractères.</div>
+            </div>
+          </div>
+
+          <!-- Prénom -->
+          <div class="col-md-4">
+            <label class="form-label">Prénom</label>
+            <input formControlName="prenom" type="text" class="form-control" placeholder="Prénom">
+            <div *ngIf="eleveForm.get('prenom')?.touched && eleveForm.get('prenom')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="eleveForm.get('prenom')?.errors?.['required']">Le prénom est requis.</div>
+              <div *ngIf="eleveForm.get('prenom')?.errors?.['maxlength']">Maximum 155 caractères.</div>
+            </div>
+          </div>
+
+          <!-- Date de naissance -->
+          <div class="col-md-4">
+            <label class="form-label">Date de naissance</label>
+            <input formControlName="date_naissance" type="date" class="form-control">
+            <div *ngIf="eleveForm.get('date_naissance')?.touched && eleveForm.get('date_naissance')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="eleveForm.get('date_naissance')?.errors?.['required']">La date est requise.</div>
+            </div>
+          </div>
+
+          <!-- Nom et prénom du parent -->
+          <div class="col-md-4">
+            <label class="form-label">Nom et prénom du parent</label>
+            <input formControlName="nom_prenom_parent" type="text" class="form-control" placeholder="Parent">
+            <div *ngIf="eleveForm.get('nom_prenom_parent')?.touched && eleveForm.get('nom_prenom_parent')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="eleveForm.get('nom_prenom_parent')?.errors?.['required']">Ce champ est requis.</div>
+            </div>
+          </div>
+
+          <!-- Email du parent -->
+          <div class="col-md-4">
+            <label class="form-label">Email du parent</label>
+            <input formControlName="email_parent" type="email" class="form-control" placeholder="Email du parent">
+            <div *ngIf="eleveForm.get('email_parent')?.touched && eleveForm.get('email_parent')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="eleveForm.get('email_parent')?.errors?.['required']">L'email est requis.</div>
+              <div *ngIf="eleveForm.get('email_parent')?.errors?.['email']">Adresse email invalide.</div>
+            </div>
+          </div>
+
+          <!-- Document justificatif -->
+          <div class="col-md-4">
+            <label class="form-label">Document justificatif</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)">
+            <div *ngIf="!selectedId && eleveForm.get('document_justificatif')?.touched && eleveForm.get('document_justificatif')?.invalid" class="text-danger small mt-1">
+              Le document est requis.
+            </div>
+          </div>
+
+          <!-- Classe -->
+          <div class="col-md-4">
+            <label class="form-label">Classe</label>
+            <select formControlName="classe_id" class="form-select">
+              <option [ngValue]="null">--Sélectionner--</option>
+              <option *ngFor="let classe of classes" [ngValue]="classe.id">{{ classe.nom }}</option>
+            </select>
+            <div *ngIf="eleveForm.get('classe_id')?.touched && eleveForm.get('classe_id')?.invalid" class="text-danger small mt-1">
+              La classe est requise.
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+            <button type="submit" class="btn btn-primary" [disabled]="eleveForm.invalid">
+              {{ selectedId ? 'Modifier' : 'Ajouter' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="resetForm()">Annuler</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Filtres -->
+      <div class="mb-4 d-flex align-items-center gap-3">
+        <label class="form-label mb-0">Filtrer par classe :</label>
+        <select [(ngModel)]="selectedClasseId" (change)="getFilteredEleves()" name="classeFilter" class="form-select w-auto">
+          <option [ngValue]="null">--Toutes les classes--</option>
+          <option *ngFor="let classe of classes" [value]="classe.id">{{ classe.nom }}</option>
+        </select>
+        <button class="btn btn-outline-secondary btn-sm" (click)="selectedClasseId = null; getFilteredEleves()">Réinitialiser</button>
+      </div>
+
+      <!-- Tableau -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Date de naissance</th>
+              <th>Parent</th>
+              <th>Email parent</th>
+              <th>Document justificatif</th>
+              <th>Classe</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of eleves">
+              <td>{{ e.user?.nom }}</td>
+              <td>{{ e.user?.prenom }}</td>
+              <td>{{ e.date_naissance }}</td>
+              <td>{{ e.nom_prenom_parent }}</td>
+              <td>{{ e.email_parent }}</td>
+        <td><a *ngIf="e.document_justificatif" [href]="e.document_justificatif" target="_blank" class="btn btn-sm btn-outline-primary">
+            Voir
+              </a>
+              <span *ngIf="!e.document_justificatif" class="text-muted small">Aucun</span>
+        </td>
+              <td>{{ e.classe?.nom }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-warning btn-sm" (click)="edit(e)">Modifier</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

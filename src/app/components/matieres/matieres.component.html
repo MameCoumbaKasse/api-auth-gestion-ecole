@@ -1,0 +1,157 @@
+<div class="wrapper">
+  
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+  <!-- Main -->
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0"></h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Matières</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container py-4">
+      <h2 class="mb-4">Gestion des matières</h2>
+
+      <!-- Formulaire -->
+      <form [formGroup]="matiereForm" (ngSubmit)="save()" class="card p-4 mb-4 shadow">
+        <div class="row g-3">
+
+          <!-- Nom -->
+          <div class="col-md-4">
+            <label class="form-label">Nom</label>
+            <input formControlName="nom" type="text" class="form-control" placeholder="Nom de la matière">
+            <div *ngIf="matiereForm.get('nom')?.touched && matiereForm.get('nom')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="matiereForm.get('nom')?.errors?.['required']">Le nom est requis.</div>
+            </div>
+          </div>
+
+          <!-- Coefficient -->
+          <div class="col-md-4">
+            <label class="form-label">Coefficient</label>
+            <input formControlName="coefficient" type="number" class="form-control" placeholder="Coefficient">
+            <div *ngIf="matiereForm.get('coefficient')?.touched && matiereForm.get('coefficient')?.invalid" class="text-danger small mt-1">
+              <div *ngIf="matiereForm.get('coefficient')?.errors?.['required']">Le coefficient est requis.</div>
+              <div *ngIf="matiereForm.get('coefficient')?.errors?.['min']">Valeur minimale : 0.</div>
+            </div>
+          </div>
+
+          <!-- Période -->
+          <div class="col-md-4">
+            <label class="form-label">Période</label>
+            <select formControlName="periode" class="form-select">
+              <option [ngValue]="null">-- Sélectionner une période --</option>
+              <option *ngFor="let p of periodes" [ngValue]="p">{{ p }}</option>
+            </select>
+            <div *ngIf="matiereForm.get('periode')?.touched && matiereForm.get('periode')?.invalid" class="text-danger small mt-1">
+              La période est requise.
+            </div>
+          </div>
+
+          <!-- Classe -->
+          <div class="col-md-4">
+            <label class="form-label">Classe</label>
+            <select formControlName="classe_id" class="form-select">
+              <option [ngValue]="null">-- Sélectionner une classe --</option>
+              <option *ngFor="let classe of classes" [ngValue]="classe.id">{{ classe.nom }}</option>
+            </select>
+            <div *ngIf="matiereForm.get('classe_id')?.touched && matiereForm.get('classe_id')?.invalid" class="text-danger small mt-1">
+              La classe est requise.
+            </div>
+          </div>
+
+          <!-- Enseignant -->
+          <div class="col-md-4">
+            <label class="form-label">Enseignant</label>
+            <select formControlName="enseignant_id" class="form-select">
+              <option [ngValue]="null">-- Sélectionner un enseignant --</option>
+              <option *ngFor="let ens of enseignants" [ngValue]="ens.id">
+                {{ ens.user?.nom }} {{ ens.user?.prenom }}
+              </option>
+            </select>
+            <div *ngIf="matiereForm.get('enseignant_id')?.touched && matiereForm.get('enseignant_id')?.invalid" class="text-danger small mt-1">
+              L'enseignant est requis.
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+            <button type="submit" class="btn btn-primary" [disabled]="matiereForm.invalid">
+              {{ selectedId ? 'Modifier' : 'Ajouter' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="resetForm()">Annuler</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Filtres -->
+      <div class="mb-4 d-flex align-items-center gap-3">
+        <label class="form-label mb-0 ms-4">Filtrer par période :</label>
+  	<select [(ngModel)]="selectedPeriode" (change)="getFilteredMatieresByPeriode()" name="periodeFilter" class="form-select w-auto">
+    	  <option [ngValue]="null">-- Toutes les périodes --</option>
+    	  <option *ngFor="let periode of periodesExistantes" [ngValue]="periode">{{ periode }}</option>
+  	</select>
+
+        <label class="form-label mb-0">Filtrer par classe :</label>
+        <select [(ngModel)]="selectedClasseId" (change)="getFilteredMatieresByClasse()" name="classeFilter" class="form-select w-auto">
+          <option [ngValue]="null">-- Toutes les classes --</option>
+          <option *ngFor="let classe of classes" [ngValue]="classe.id">{{ classe.nom }}</option>
+        </select>
+
+        <label class="form-label mb-0 ms-4">Filtrer par enseignant :</label>
+        <select [(ngModel)]="selectedEnseignantId" (change)="getFilteredMatieresByEnseignant()" name="enseignantFilter" class="form-select w-auto">
+          <option [ngValue]="null">-- Tous les enseignants --</option>
+          <option *ngFor="let enseignant of enseignants" [ngValue]="enseignant.id">
+            {{ enseignant.user?.nom }} {{ enseignant.user?.prenom }}
+          </option>
+        </select>
+
+        <button class="btn btn-outline-secondary btn-sm ms-2" (click)="selectedPeriode = null; selectedClasseId = null; selectedEnseignantId = null; getMatieres()">
+          Réinitialiser
+        </button>
+      </div>
+
+      <!-- Tableau -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Nom</th>
+              <th>Coefficient</th>
+              <th>Periode</th>
+              <th>Classe</th>
+              <th>Enseignant</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of matieres">
+              <td>{{ m.nom }}</td>
+              <td>{{ m.coefficient }}</td>
+              <td>{{ m.periode }}</td>
+              <td>{{ m.classe?.nom }}</td>
+              <td>{{ m.enseignant?.user?.nom }} {{ m.enseignant?.user?.prenom }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-warning btn-sm" (click)="edit(m)">Modifier</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

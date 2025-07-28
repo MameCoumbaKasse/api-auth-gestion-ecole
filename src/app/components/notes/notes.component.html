@@ -1,0 +1,118 @@
+<div class="wrapper">
+    
+  <!-- Sidebar + Navbar -->
+  <app-menu></app-menu>
+
+  <!-- Main -->
+  <main class="app-main flex-grow-1" style="background-color: #f8f9fa;">
+    <div class="app-content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6"><h3 class="mb-0">Gestion des Notes</h3></div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Notes</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container py-4">
+    <h2 class="mb-4">Gestion des Notes</h2>
+
+    <!-- Filtres -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+        <label>Classe</label>
+        <select class="form-select" [(ngModel)]="selectedClasseId" (change)="onClasseChange()">
+            <option *ngFor="let classe of classes" [ngValue]="classe.id">{{ classe.nom }}</option>
+        </select>
+        </div>
+        <div class="col-md-4">
+        <label>Matière</label>
+        <select class="form-select" [(ngModel)]="selectedMatiereId" (change)="onMatiereChange()">
+            <option *ngFor="let mat of matieres" [ngValue]="mat.id">{{ mat.nom }}</option>
+        </select>
+        </div>
+    </div>
+
+    <!-- Tableau -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date Naissance</th>
+            <th>Classe</th>
+            <th>Niveau</th>
+            <th>Matière</th>
+            <th>Note</th>
+            <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let e of eleves">
+            <td>{{ e.user.nom }}</td>
+            <td>{{ e.user.prenom }}</td>
+            <td>{{ e.date_naissance }}</td>
+            <td>{{ e.classe.nom }}</td>
+            <td>{{ e.classe.niveau }}</td>
+            <td>{{ getMatiereName() }}</td>
+            <td>{{ findNoteForEleve(e.id)?.note || '-' }}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" (click)="openModal(e)">
+                {{ findNoteForEleve(e.id) ? 'Modifier la note' : 'Saisir la note' }}
+                </button>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <!-- Modal (à styliser avec Bootstrap ou autre) -->
+    <div id="noteModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">{{ selectedNote ? 'Modifier la note' : 'Saisir la note' }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form [formGroup]="noteForm" (ngSubmit)="saveNote()">
+            <div class="modal-body">
+                <div class="mb-3">
+                <label>Élève</label>
+                <input type="text" class="form-control" [value]="selectedEleve?.user?.nom + ' ' + selectedEleve?.user?.prenom" readonly>
+                </div>
+                <div class="mb-3">
+                <label>Matière</label>
+                <input type="text" class="form-control" [value]="getMatiereName()" readonly>
+                </div>
+                <div class="mb-3">
+                <label>Période</label>
+                <select formControlName="periode" class="form-select">
+                    <option *ngFor="let p of periodes" [value]="p">{{ p }}</option>
+                </select>
+                </div>
+                <div class="mb-3">
+                <label>Note</label>
+                <input formControlName="note" type="number" class="form-control" min="0" max="20">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" [disabled]="noteForm.invalid">Enregistrer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

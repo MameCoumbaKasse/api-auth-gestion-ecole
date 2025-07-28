@@ -1,19 +1,2 @@
-<div class="container mt-4">
-  <h2>Dashboard</h2>
-  <ul class="list-group">
-    <li class="list-group-item" *ngIf="auth.isAdmin()"><a routerLink="/classes">Gestion des Classes</a></li>
-    <li class="list-group-item" *ngIf="auth.isAdmin()"><a routerLink="/matieres">Gestion des Matières</a></li>
-    <li class="list-group-item" *ngIf="auth.isAdmin()"><a routerLink="/enseignants">Gestion des Enseignants</a></li>
-    <li class="list-group-item" *ngIf="auth.isAdmin()"><a routerLink="/eleves">Gestion des Élèves</a></li>
-    <li class="list-group-item" *ngIf="auth.isAdmin()"><a routerLink="/notes">Gestion des Notes</a></li>
-    <li class="list-group-item" *ngIf="auth.isAdmin()"><a routerLink="/bulletins">Gestion des Bulletins</a></li>
-
-    <li class="list-group-item" *ngIf="auth.isEnseignant()"><a routerLink="/notes">Saisie des Notes</a></li>
-
-    <li class="list-group-item" *ngIf="auth.isEleve()"><a routerLink="/bulletins">Voir Mes Bulletins</a></li>
-  <button (click)="logout()">Déconnexion</button>
-  </ul>
-</div>
-
 
 <router-outlet />

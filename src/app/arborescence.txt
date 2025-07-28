@@ -1,0 +1,78 @@
+Structure du dossier pour le volume Starfoulah
+Le num‚ro de s‚rie du volume est 1EE7-7C8E
+X:.
+|   app-routing.module.ts
+|   app.component.css
+|   app.component.html
+|   app.component.spec.ts
+|   app.component.ts
+|   app.module.ts
+|   arborescence.txt
+|   auth.interceptor.spec.ts
+|   auth.interceptor.ts
+|   
++---components
+|   +---bulletins
+|   |       bulletins.component.css
+|   |       bulletins.component.html
+|   |       bulletins.component.spec.ts
+|   |       bulletins.component.ts
+|   |       
+|   +---classes
+|   |       classes.component.css
+|   |       classes.component.html
+|   |       classes.component.spec.ts
+|   |       classes.component.ts
+|   |       
+|   +---dashboard
+|   |       dashboard.component.css
+|   |       dashboard.component.html
+|   |       dashboard.component.spec.ts
+|   |       dashboard.component.ts
+|   |       
+|   +---eleves
+|   |       eleves.component.css
+|   |       eleves.component.html
+|   |       eleves.component.spec.ts
+|   |       eleves.component.ts
+|   |       
+|   +---login
+|   |       login.component.css
+|   |       login.component.html
+|   |       login.component.spec.ts
+|   |       login.component.ts
+|   |       
+|   +---matieres
+|   |       matieres.component.css
+|   |       matieres.component.html
+|   |       matieres.component.spec.ts
+|   |       matieres.component.ts
+|   |       
+|   +---notes
+|   |       notes.component.css
+|   |       notes.component.html
+|   |       notes.component.spec.ts
+|   |       notes.component.ts
+|   |       
+|   \---register
+|           register.component.css
+|           register.component.html
+|           register.component.spec.ts
+|           register.component.ts
+|           
+\---services
+        auth.service.spec.ts
+        auth.service.ts
+        bulletin.service.spec.ts
+        bulletin.service.ts
+        classe.service.spec.ts
+        classe.service.ts
+        eleve.service.spec.ts
+        eleve.service.ts
+        enseignant.service.spec.ts
+        enseignant.service.ts
+        matiere.service.spec.ts
+        matiere.service.ts
+        note.service.spec.ts
+        note.service.ts
+        
